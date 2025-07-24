@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 # VastraKart - Multi-Vendor Fashion Platform
 
@@ -89,3 +90,7 @@ The application can be deployed to any static hosting service like Vercel, Netli
 ## License
 
 This project is licensed under the MIT License.
+=======
+# VastraKart
+Internship Project
+>>>>>>> 5a9d7f57bf884d9486a82fbf080f714f4c750a37

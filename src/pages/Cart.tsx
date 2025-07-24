@@ -1,43 +1,35 @@
-
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useCart } from "@/contexts/CartContext";
+import BackButton from "@/components/BackButton";
 
 const Cart = () => {
-  // Mock cart data - in real app, this would come from state management
-  const cartItems = [
-    {
-      id: 1,
-      title: "Premium Cotton T-Shirt",
-      price: 999,
-      quantity: 2,
-      size: "M",
-      color: "White",
-      image: "/placeholder.svg"
-    },
-    {
-      id: 2,
-      title: "Denim Jacket",
-      price: 2499,
-      quantity: 1,
-      size: "L",
-      color: "Blue",
-      image: "/placeholder.svg"
-    }
-  ];
+  const { cartItems, removeFromCart, updateQuantity } = useCart();
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = 99;
+  const shipping = cartItems.length > 0 ? 99 : 0;
   const total = subtotal + shipping;
+
+  const handleQuantityDecrease = (id: number, currentQuantity: number) => {
+    updateQuantity(id, currentQuantity - 1);
+  };
+
+  const handleQuantityIncrease = (id: number, currentQuantity: number) => {
+    updateQuantity(id, currentQuantity + 1);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
       <div className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <BackButton />
+        </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
 
         {cartItems.length === 0 ? (
@@ -60,28 +52,43 @@ const Cart = () => {
                       <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
                         <img 
                           src={item.image} 
-                          alt={item.title}
+                          alt={item.name}
                           className="w-full h-full object-cover"
                         />
                       </div>
                       
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                        <p className="text-sm text-gray-600">Size: {item.size} | Color: {item.color}</p>
+                        <h3 className="font-semibold text-gray-900">{item.name}</h3>
+                        <p className="text-sm text-gray-600">Category: {item.category}</p>
                         <p className="text-lg font-bold text-brand-600">₹{item.price}</p>
                       </div>
                       
                       <div className="flex items-center space-x-2">
-                        <Button variant="outline" size="icon" className="w-8 h-8">
+                        <Button 
+                          variant="outline" 
+                          size="icon" 
+                          className="w-8 h-8"
+                          onClick={() => handleQuantityDecrease(item.id, item.quantity)}
+                        >
                           <Minus className="w-4 h-4" />
                         </Button>
                         <span className="w-8 text-center">{item.quantity}</span>
-                        <Button variant="outline" size="icon" className="w-8 h-8">
+                        <Button 
+                          variant="outline" 
+                          size="icon" 
+                          className="w-8 h-8"
+                          onClick={() => handleQuantityIncrease(item.id, item.quantity)}
+                        >
                           <Plus className="w-4 h-4" />
                         </Button>
                       </div>
                       
-                      <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => removeFromCart(item.id)}
+                      >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
